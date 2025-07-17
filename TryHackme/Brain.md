@@ -158,3 +158,5 @@ meterpreter > cat flag.txt
 THM{REDACTED}
 ```
 
+
+# Nafas olar ekanman, davom etaman...
