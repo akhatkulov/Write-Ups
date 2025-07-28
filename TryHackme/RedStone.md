@@ -8,7 +8,6 @@ Parollarni saralab olish uchun buyruq::
 
 ```
 grep "bu" /usr/share/seclists/Passwords/Leaked-Databases/rockyou.txt > bu_passwords.txt
-
 ```
 BruteForce qilamiz endi SSH parolni topish uchun::
 ```
