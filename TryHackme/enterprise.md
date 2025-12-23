@@ -653,3 +653,7 @@ User flag kirishimiz bilan Desktopda turibdi.
 Flag: THM{redacted}
 
 ## Privilage escalation
+Bu uchun bizga kerak bo'ladigan 3ta dastur.
+- PowerView (ADni keng qamrovli enum qilish)
+- PowerUp (Mahalliy Windows tizimidagi privilege escalation zaifliklarini aniqlash)
+- Sharphound (Bloodhound uchun grafik yig'ish)
