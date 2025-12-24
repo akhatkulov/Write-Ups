@@ -654,6 +654,6 @@ Flag: THM{redacted}
 
 ## Privilage escalation
 Bu uchun bizga kerak bo'ladigan 3ta dastur.
-- PowerView (ADni keng qamrovli enum qilish)
-- PowerUp (Mahalliy Windows tizimidagi privilege escalation zaifliklarini aniqlash)
+- [PowerView](https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1) (ADni keng qamrovli enum qilish)
+- [PowerUp](https://github.com/PowerShellMafia/PowerSploit/blob/master/Privesc/PowerUp.ps1) (Mahalliy Windows tizimidagi privilege escalation zaifliklarini aniqlash)
 - Sharphound (Bloodhound uchun grafik yig'ish)
